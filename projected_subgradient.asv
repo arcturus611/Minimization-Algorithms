@@ -1,0 +1,30 @@
+%% Projected subgradient algorithm
+%% Choose v_k in subdiff(f(x_k)), x_(k+1) = x_(k) + v_k*t_k
+
+%% Initialize parameters
+A = [4 2 -2; 2 6 0; -2 0 8]; b = [-8; -4; -2];
+x0 = [50;50;50];
+n = 3; %dimension of problem
+N = 100; % number of iterations
+
+x = zeros(n, N+1); 
+x(:, 1) = x0;
+Beta = norm(A);
+
+ProjectedSubgradient = 0;
+ProjectedGradient = 1;
+
+%% Iterate
+for i = 1:N
+    %% Subgradient
+    v = calc_subgradient(A, b, x(:, i));
+    
+    %% Step
+    t = 1/(Beta*sqrt(i));
+    x(:, i+1) = x(:, i) - t*v; 
+    
+    %% Project into feasible region
+    temp = x(:, i+1);
+    temp(temp<0) = 0; 
+    x(:, i+1) = temp; 
+end
